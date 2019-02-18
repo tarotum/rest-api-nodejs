@@ -4,7 +4,7 @@ const limax = require('limax');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const Schema = mongoose.Schema;
 
-const postSchema = new Schema(
+const CategorySchema = new Schema(
   {
     type: {
       type: String,
@@ -33,16 +33,21 @@ const postSchema = new Schema(
       enum: ['en', 'ru', 'ua'],
       required: true
     },
-    category: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Category'
-    }
+    posts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Post'
+      }
+    ]
   },
   {
     timestamps: true
   }
 );
 
-postSchema.plugin(mongooseSlugPlugin, { tmpl: '<%=title%>', slug: limax });
-postSchema.plugin(mongoosePaginate);
-module.exports = mongoose.model('Post', postSchema);
+CategorySchema.plugin(mongooseSlugPlugin, {
+  tmpl: '<%=title%>',
+  slug: limax
+});
+CategorySchema.plugin(mongoosePaginate);
+module.exports = mongoose.model('Category', CategorySchema);

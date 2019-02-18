@@ -2,8 +2,8 @@ const express = require('express');
 const Router = express.Router();
 const multer = require('multer');
 
-const PostController = require('../controllers/post');
 const language = require('../middleware/language');
+const CategoryController = require('../controllers/category');
 
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
@@ -36,10 +36,10 @@ const upload = multer({
   fileFilter: fileFilter
 });
 Router.get('/create/', (req, res) => {
-  res.render('pages/post');
+  res.render('pages/category');
 });
-Router.get('/:lang*?/', language, PostController.getAll);
-Router.post('/', upload.single('image'), PostController.create);
-Router.delete('/remove/:id', PostController.removeById);
+Router.get('/:lang*?/', language, CategoryController.getAll);
+Router.post('/', upload.single('image'), CategoryController.create);
+Router.delete('/remove/:id', CategoryController.removeById);
 
 module.exports = Router;

@@ -2,8 +2,8 @@ const express = require('express');
 const Router = express.Router();
 const multer = require('multer');
 
-const language = require('../middleware/language');
-const CategoryController = require('../controllers/category');
+// const language = require('../middleware/language.middleware');
+const PostController = require('../controllers/post.controller');
 
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
@@ -35,11 +35,14 @@ const upload = multer({
   },
   fileFilter: fileFilter
 });
-Router.get('/create/', (req, res) => {
-  res.render('pages/category');
-});
-Router.get('/:lang*?/', language, CategoryController.getAll);
-Router.post('/', upload.single('image'), CategoryController.create);
-Router.delete('/remove/:id', CategoryController.removeById);
+// Router.get('/create/', (req, res) => {
+//   res.render('pages/post');
+// });
+// Error here !!!!!!!
+Router.get('/:slug', PostController.getOneBySlug);
+Router.get('/', PostController.getAll);
+Router.post('/create', upload.single('image'), PostController.create);
+Router.patch('/update/:id', upload.single('image'), PostController.updateById);
+Router.delete('/remove/:id', PostController.removeById);
 
 module.exports = Router;

@@ -1,0 +1,16 @@
+post {
+    /create [post] create
+    /:slug [get] getBySlug
+    /:id [get] getById
+    / [get] {?lang} getAll
+    /remove [delete] removeById
+    /update [path] updateById
+}
+posttag {
+    /create [post] create
+    /:slug [get] getBySlug
+    /:id [get] getById
+    / [get] {?lang} getAll
+    /remove [delete] removeById
+    /update [path] updateById
+}

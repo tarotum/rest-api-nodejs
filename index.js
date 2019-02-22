@@ -4,14 +4,12 @@ const bodyParser = require('body-parser');
 const expressLayouts = require('express-ejs-layouts');
 require('dotenv').config();
 
-const PostRoutes = require('./routes/post');
-const CategoryRoutes = require('./routes/category');
+const PostRoutes = require('./routes/post.route');
+const PostTagRoutes = require('./routes/postTag.route');
 
 // Conntent DB
 mongoose.connect(
-  `mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@${
-    process.env.DB_HOST
-  }:${process.env.DB_PORT}/${process.env.DB_NAME}`,
+  `mongodb://localhost:27017/${process.env.DB_NAME}`,
   { useNewUrlParser: true },
   err => {
     if (err) {
@@ -39,7 +37,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/posts', PostRoutes);
-app.use('/categories', CategoryRoutes);
+app.use('/poststags', PostTagRoutes);
 
 app.listen(process.env.PORT, () =>
   console.log(`Server is runing on http://localhost:${process.env.PORT}`)

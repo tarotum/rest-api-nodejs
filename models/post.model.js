@@ -8,7 +8,7 @@ const postSchema = new Schema(
   {
     type: {
       type: String,
-      enum: ['graphic-post', 'sound-post'],
+      enum: ['graphic', 'sound'],
       required: true
     },
     status: {
@@ -24,19 +24,12 @@ const postSchema = new Schema(
       type: String
     },
     content: String,
-    autor: {
-      type: String,
-      required: true
-    },
     lang: {
       type: String,
       enum: ['en', 'ru', 'ua'],
       required: true
     },
-    category: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Category'
-    }
+    tags: [{ type: Schema.Types.ObjectId, ref: 'PostTag' }]
   },
   {
     timestamps: true

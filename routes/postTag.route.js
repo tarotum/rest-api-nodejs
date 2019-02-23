@@ -2,7 +2,6 @@ const express = require('express');
 const Router = express.Router();
 const multer = require('multer');
 
-// const language = require('../middleware/language.middleware');
 const TagController = require('../controllers/postTag.controller');
 
 const storage = multer.diskStorage({
@@ -35,10 +34,6 @@ const upload = multer({
   },
   fileFilter: fileFilter
 });
-// Router.get('/create/', (req, res) => {
-//   res.render('pages/post');
-// });
-// Error here !!!!!!!
 Router.get('/:slug', TagController.getOneBySlug);
 Router.get('/', TagController.getAll);
 Router.post('/create', upload.single('image'), TagController.create);

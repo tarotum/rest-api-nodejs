@@ -2,14 +2,17 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const expressLayouts = require('express-ejs-layouts');
-require('dotenv').config();
-
+const ENV = require('dotenv');
 const PostRoutes = require('./routes/post.route');
 const PostTagRoutes = require('./routes/postTag.route');
 
+ENV.config();
+
 // Conntent DB
 mongoose.connect(
-  `mongodb://localhost:27017/${process.env.DB_NAME}`,
+  `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT}/${
+    process.env.DB_NAME
+  }`,
   { useNewUrlParser: true },
   err => {
     if (err) {

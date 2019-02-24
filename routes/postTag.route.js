@@ -1,15 +1,16 @@
 const express = require('express');
+
 const Router = express.Router();
 const multer = require('multer');
 
 const TagController = require('../controllers/postTag.controller');
 
 const storage = multer.diskStorage({
-  destination: function(req, file, cb) {
+  destination(req, file, cb) {
     cb(null, './uploads/');
   },
-  filename: function(req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname);
+  filename(req, file, cb) {
+    cb(null, `${Date.now()  }-${  file.originalname}`);
   }
 });
 
@@ -28,11 +29,11 @@ const fileFilter = (req, file, cb) => {
 };
 
 const upload = multer({
-  storage: storage,
+  storage,
   limits: {
     fileSize: 1024 * 1024 * 5
   },
-  fileFilter: fileFilter
+  fileFilter
 });
 Router.get('/:slug', TagController.getOneBySlug);
 Router.get('/', TagController.getAll);

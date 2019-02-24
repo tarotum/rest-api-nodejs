@@ -26,6 +26,7 @@ module.exports = {
   },
   updateById: async (req, res) => {
     const updateFields = {};
+    // eslint-disable-next-line no-restricted-syntax
     for (const [key, value] of Object.entries(req.body)) {
       updateFields[key] = value.trim();
     }
@@ -103,9 +104,7 @@ module.exports = {
         res.status(404).json({ message: 'Tag not found! :c' });
       } else {
         await Tag.deleteOne({ _id: req.params.id });
-        res
-          .status(200)
-          .json({ message: `Tag ${tag.title} deleted successfuly` });
+        res.status(200).json({ message: `Tag ${tag.title} deleted successfuly` });
       }
     } catch (error) {
       res.status(500).json({ error });

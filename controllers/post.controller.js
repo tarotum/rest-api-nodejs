@@ -31,8 +31,9 @@ module.exports = {
   },
   updateById: async (req, res) => {
     const updateFields = {};
+    // eslint-disable-next-line no-restricted-syntax
     for (const [key, value] of Object.entries(req.body)) {
-      if (key == 'tags') {
+      if (key === 'tags') {
         const tagsValue = value.split(',');
         updateFields.tags = tagsValue;
       } else {
@@ -116,9 +117,7 @@ module.exports = {
         res.status(404).json({ message: 'Post not found! :c' });
       } else {
         await Post.deleteOne({ _id: req.params.id });
-        res
-          .status(200)
-          .json({ message: `Post ${post.title} deleted successfuly` });
+        res.status(200).json({ message: `Post ${post.title} deleted successfuly` });
       }
     } catch (error) {
       res.status(500).json({ error });

@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const mongooseSlugPlugin = require('mongoose-slug-plugin');
-const limax = require('limax');
 const mongoosePaginate = require('mongoose-paginate-v2');
-const Schema = mongoose.Schema;
+
+const { Schema } = mongoose;
 
 const postTagSchema = new Schema({
   type: {
@@ -30,6 +30,6 @@ const postTagSchema = new Schema({
   }
 });
 
-postTagSchema.plugin(mongooseSlugPlugin, { tmpl: '<%=title%>', slug: limax });
+postTagSchema.plugin(mongooseSlugPlugin, { tmpl: '<%=title%>' });
 postTagSchema.plugin(mongoosePaginate);
 module.exports = mongoose.model('PostTag', postTagSchema);

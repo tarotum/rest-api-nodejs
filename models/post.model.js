@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const mongooseSlugPlugin = require('mongoose-slug-plugin');
-const limax = require('limax');
 const mongoosePaginate = require('mongoose-paginate-v2');
-const Schema = mongoose.Schema;
+
+const {Schema} = mongoose;
 
 const postSchema = new Schema(
   {
@@ -36,6 +36,6 @@ const postSchema = new Schema(
   }
 );
 
-postSchema.plugin(mongooseSlugPlugin, { tmpl: '<%=title%>', slug: limax });
+postSchema.plugin(mongooseSlugPlugin, { tmpl: '<%=title%>' });
 postSchema.plugin(mongoosePaginate);
 module.exports = mongoose.model('Post', postSchema);

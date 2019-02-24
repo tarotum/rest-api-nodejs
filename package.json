@@ -9,23 +9,33 @@
   },
   "scripts": {
     "start": "cross-env NODE_ENV=production node index.js",
-    "dev": "cross-env NODE_ENV=development nodemon index.js"
+    "dev": "cross-env NODE_ENV=development nodemon index.js",
+    "lint:js": "eslint ./"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "airbnb-base",
+      "prettier"
+    ],
+    "env": {
+      "node": true
+    }
   },
   "devDependencies": {
     "eslint": "^5.14.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-prettier": "^4.0.0",
+    "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-node": "^8.0.1",
     "nodemon": "^1.18.10"
   },
   "dependencies": {
-    "bcrypt": "^3.0.4",
     "body-parser": "^1.18.3",
     "cross-env": "^5.2.0",
     "dotenv": "^6.2.0",
-    "ejs": "^2.6.1",
     "express": "^4.16.4",
-    "express-ejs-layouts": "^2.5.0",
     "jsonwebtoken": "^8.4.0",
-    "limax": "^1.7.0",
     "mongoose": "^5.4.13",
     "mongoose-paginate-v2": "^1.0.21",
     "mongoose-slug-plugin": "^1.0.2",

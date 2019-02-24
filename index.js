@@ -36,7 +36,7 @@ app.use('/uploads', express.static(__dirname + '/uploads'));
 app.set('view engine', 'ejs');
 app.use(expressLayouts);
 app.get('/', (req, res) => {
-  res.send('hello world');
+  res.send('hello world !!');
 });
 
 app.use('/posts', PostRoutes);

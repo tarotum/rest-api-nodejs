@@ -2,3 +2,4 @@
 yarn-error.log
 .env
 /uploads/*.*
+ecosystem.config.js

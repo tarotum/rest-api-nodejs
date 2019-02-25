@@ -2,24 +2,12 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const ENV = require('dotenv');
-const PostRoutes = require('./routes/post.route');
-const PostTagRoutes = require('./routes/postTag.route');
 
 ENV.config();
 
-// Conntent DB
-mongoose.connect(
-  `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
-  { useNewUrlParser: true },
-  err => {
-    if (err) {
-      global.console.log(`Some problem with the connection ${err}`);
-    } else {
-      global.console.log('The Mongoose connection is ready');
-    }
-  }
-);
-mongoose.set('useCreateIndex', true);
+const UserRoutes = require('./routes/user.route');
+const PostRoutes = require('./routes/post.route');
+const PostTagRoutes = require('./routes/postTag.route');
 
 const app = express();
 
@@ -30,13 +18,24 @@ app.use(bodyParser.json());
 // Static files folder
 app.use('/uploads', express.static(`${__dirname}/uploads`));
 
-app.get('/', (req, res) => {
-  res.send('hello world !!');
-});
+// Routes
+app.use('/api/users', UserRoutes);
+app.use('/api/posts', PostRoutes);
+app.use('/api/poststags', PostTagRoutes);
 
-app.use('/posts', PostRoutes);
-app.use('/poststags', PostTagRoutes);
-
-app.listen(process.env.PORT, () =>
-  global.console.log(`Server is runing on http://localhost:${process.env.PORT}`)
+// Conntent DB
+mongoose.connect(
+  `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
+  { useNewUrlParser: true },
+  err => {
+    if (err) {
+      global.console.log(`Some problem with the connection ${err}`);
+    } else {
+      global.console.log('The Mongoose connection is ready');
+      app.listen(process.env.PORT, () =>
+        global.console.log(`Server is runing on http://localhost:${process.env.PORT}`)
+      );
+    }
+  }
 );
+mongoose.set('useCreateIndex', true);

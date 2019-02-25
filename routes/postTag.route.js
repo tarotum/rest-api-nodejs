@@ -3,6 +3,7 @@ const express = require('express');
 const Router = express.Router();
 const multer = require('multer');
 
+const auth = require('../middleware/auth.middleware');
 const TagController = require('../controllers/postTag.controller');
 
 const storage = multer.diskStorage({
@@ -10,7 +11,7 @@ const storage = multer.diskStorage({
     cb(null, './uploads/');
   },
   filename(req, file, cb) {
-    cb(null, `${Date.now()  }-${  file.originalname}`);
+    cb(null, `${Date.now()}-${file.originalname}`);
   }
 });
 
@@ -37,8 +38,8 @@ const upload = multer({
 });
 Router.get('/:slug', TagController.getOneBySlug);
 Router.get('/', TagController.getAll);
-Router.post('/create', upload.single('image'), TagController.create);
-Router.patch('/update/:id', upload.single('image'), TagController.updateById);
-Router.delete('/remove/:id', TagController.removeById);
+Router.post('/create', auth, upload.single('image'), TagController.create);
+Router.patch('/update/:id', auth, upload.single('image'), TagController.updateById);
+Router.delete('/remove/:id', auth, TagController.removeById);
 
 module.exports = Router;

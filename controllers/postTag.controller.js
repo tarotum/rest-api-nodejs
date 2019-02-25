@@ -16,11 +16,12 @@ module.exports = {
     try {
       const result = await newTag.save();
       res.status(201).json({
-        post: result
+        post: result,
+        errors: []
       });
     } catch (error) {
       res.status(500).json({
-        error
+        errors: [error]
       });
     }
   },
@@ -40,33 +41,33 @@ module.exports = {
         { $set: updateFields },
         { new: true }
       );
-      res.status(200).json({ result });
+      res.status(200).json({ result, errors: [] });
     } catch (error) {
-      res.status(500).json({ error });
+      res.status(500).json({ errors: [error] });
     }
   },
   getOneById: async (req, res) => {
     try {
       const tag = await Tag.findOne({ _id: req.params.id });
       if (!tag) {
-        res.status(404).json({ message: 'Post Tag not found! :c' });
+        res.status(404).json({ errors: ['Post Tag not found! :c'] });
       } else {
-        res.status(200).json({ tag });
+        res.status(200).json({ tag, errors: [] });
       }
     } catch (error) {
-      res.status(500).json({ error });
+      res.status(500).json({ errors: [error] });
     }
   },
   getOneBySlug: async (req, res) => {
     try {
       const tag = await Tag.findOne({ slug: req.params.slug });
       if (!tag) {
-        res.status(404).json({ message: 'Post Tag not found! :c' });
+        res.status(404).json({ errors: ['Post Tag not found! :c'] });
       } else {
-        res.status(200).json({ tag });
+        res.status(200).json({ tag, errors: [] });
       }
     } catch (error) {
-      res.status(500).json({ error });
+      res.status(500).json({ errors: [error] });
     }
   },
   getAll: async (req, res) => {
@@ -92,22 +93,22 @@ module.exports = {
     };
     try {
       const result = await Tag.paginate(query, options);
-      res.status(200).json(result);
+      res.status(200).json({ result, errors: [] });
     } catch (error) {
-      res.status(500).json({ error });
+      res.status(500).json({ errors: [error] });
     }
   },
   removeById: async (req, res) => {
     try {
       const tag = await Tag.findById({ _id: req.params.id });
       if (!tag) {
-        res.status(404).json({ message: 'Tag not found! :c' });
+        res.status(404).json({ errors: ['Tag not found! :c'] });
       } else {
         await Tag.deleteOne({ _id: req.params.id });
-        res.status(200).json({ message: `Tag ${tag.title} deleted successfuly` });
+        res.status(200).json({ message: `Tag ${tag.title} deleted successfuly`, errors: [] });
       }
     } catch (error) {
-      res.status(500).json({ error });
+      res.status(500).json({ errors: [error] });
     }
   }
 };

@@ -21,11 +21,12 @@ module.exports = {
     try {
       const result = await newPost.save();
       res.status(201).json({
-        post: result
+        post: result,
+        errors: []
       });
     } catch (error) {
       res.status(500).json({
-        error
+        errors: [error]
       });
     }
   },
@@ -51,34 +52,35 @@ module.exports = {
         { new: true }
       );
       res.status(200).json({
-        post: result
+        post: result,
+        errors: []
       });
     } catch (error) {
-      res.status(500).json({ error });
+      res.status(500).json({ errors: [error] });
     }
   },
   getOneById: async (req, res) => {
     try {
       const post = await Post.findOne({ _id: req.params.id });
       if (!post) {
-        res.status(404).json({ message: 'Post not found! :c' });
+        res.status(404).json({ errors: ['Post not found! :c'] });
       } else {
-        res.status(200).json({ post });
+        res.status(200).json({ post, errors: [] });
       }
     } catch (error) {
-      res.status(500).json({ error });
+      res.status(500).json({ errors: [error] });
     }
   },
   getOneBySlug: async (req, res) => {
     try {
       const post = await Post.findOne({ slug: req.params.slug });
       if (!post) {
-        res.status(404).json({ message: 'Post not found! :c' });
+        res.status(404).json({ errors: ['Post not found! :c'] });
       } else {
-        res.status(200).json({ post });
+        res.status(200).json({ post, errors: [] });
       }
     } catch (error) {
-      res.status(500).json({ error });
+      res.status(500).json({ errors: [error] });
     }
   },
   getAll: async (req, res) => {
@@ -105,22 +107,22 @@ module.exports = {
     };
     try {
       const result = await Post.paginate(query, options);
-      res.status(200).json(result);
+      res.status(200).json({ result, errors: [] });
     } catch (error) {
-      res.status(500).json({ error });
+      res.status(500).json({ errors: [error] });
     }
   },
   removeById: async (req, res) => {
     try {
       const post = await Post.findById({ _id: req.params.id });
       if (!post) {
-        res.status(404).json({ message: 'Post not found! :c' });
+        res.status(404).json({ errors: ['Post not found! :c'] });
       } else {
         await Post.deleteOne({ _id: req.params.id });
-        res.status(200).json({ message: `Post ${post.title} deleted successfuly` });
+        res.status(200).json({ message: `Post ${post.title} deleted successfuly`, errors: [] });
       }
     } catch (error) {
-      res.status(500).json({ error });
+      res.status(500).json({ errors: [error] });
     }
   }
 };

@@ -18,10 +18,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // Config CORS
-
+const whitelist = process.env.WHITELIST.split(',');
 app.use(
   cors({
-    origin: ['http://localhost:8000', 'http://185.16.41.75']
+    origin: whitelist
   })
 );
 

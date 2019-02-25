@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const ENV = require('dotenv');
+const cors = require('cors');
+const morgan = require('morgan');
 
 ENV.config();
 
@@ -14,6 +16,17 @@ const app = express();
 // Config bodyParser
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+// Config CORS
+
+app.use(
+  cors({
+    origin: ['http://localhost:8000', 'http://185.16.41.75']
+  })
+);
+
+// Config logs
+app.use(morgan('tiny'));
 
 // Static files folder
 app.use('/uploads', express.static(`${__dirname}/uploads`));

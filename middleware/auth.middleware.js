@@ -4,14 +4,14 @@ const ENV = require('dotenv');
 ENV.config();
 
 module.exports = async (req, res, next) => {
-  const authorization = req.headers.authorization.split(' ')[1];
+  const { authorization } = req.headers;
   if (!authorization) {
     res.status(401).json({
       errors: ['You could not be authorized']
     });
   } else {
     try {
-      const decodedToken = jwt.verify(authorization, process.env.JWT_SECRET);
+      const decodedToken = jwt.verify(authorization.split(' ')[1], process.env.JWT_SECRET);
       req.userInfo = decodedToken;
       next();
     } catch (error) {

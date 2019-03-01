@@ -10,7 +10,7 @@ module.exports = {
     try {
       const userExist = await User.findOne({ email: req.body.email });
       if (userExist) {
-        res.status(409).json({ errors: ['User already exist.'] });
+        res.status(409).json({ error: 'User already exist.' });
       } else {
         const passwordHash = await bcrypt.hash(req.body.password, 10);
         const user = new User({
@@ -21,10 +21,10 @@ module.exports = {
 
         const savedUser = await user.save();
 
-        res.status(201).json({ result: `Created ${savedUser.name} user`, errors: [] });
+        res.status(201).json({ result: `Created ${savedUser.name} user` });
       }
     } catch (error) {
-      res.status(500).json({ errors: [error] });
+      res.status(500).json({ error });
     }
   },
   signin: async (req, res) => {
@@ -43,15 +43,15 @@ module.exports = {
           res
             .status(200)
             .header('x-auth', token)
-            .json({ result: `Welcome ${user.name}`, token, errors: [] });
+            .json({ result: `Welcome ${user.name}`, token });
         } else {
-          res.status(401).json({ errors: ['Invalid username or password'] });
+          res.status(401).json({ error: 'Invalid username or password' });
         }
       } else {
-        res.status(401).json({ errors: ['Invalid username or password'] });
+        res.status(401).json({ error: 'Invalid username or password' });
       }
     } catch (error) {
-      res.status(500).json({ errors: [error] });
+      res.status(500).json({ error });
     }
   }
 };

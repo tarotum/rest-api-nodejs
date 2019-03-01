@@ -32,7 +32,7 @@ app.use(morgan('tiny'));
 app.use('/uploads', express.static(`${__dirname}/uploads`));
 
 // Routes
-app.use('/api/users', UserRoutes);
+app.use('/api/user', UserRoutes);
 app.use('/api/posts', PostRoutes);
 app.use('/api/poststags', PostTagRoutes);
 

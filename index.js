@@ -10,6 +10,7 @@ ENV.config();
 const UserRoutes = require('./routes/user.route');
 const PostRoutes = require('./routes/post.route');
 const PostTagRoutes = require('./routes/postTag.route');
+const ImageRoutes = require('./routes/image.route');
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use(morgan('tiny'));
 app.use('/uploads', express.static(`${__dirname}/uploads`));
 
 // Routes
+app.use('/api/image', ImageRoutes);
 app.use('/api/user', UserRoutes);
 app.use('/api/posts', PostRoutes);
 app.use('/api/poststags', PostTagRoutes);

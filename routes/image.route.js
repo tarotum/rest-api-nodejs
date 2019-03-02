@@ -4,8 +4,6 @@ const path = require('path');
 const Router = express.Router();
 const multer = require('multer');
 
-const auth = require('../middleware/auth.middleware');
-
 const storage = multer.diskStorage({
   destination(req, file, cb) {
     cb(null, './uploads/');
@@ -23,6 +21,9 @@ const fileFilter = (req, file, cb) => {
     case 'image/png':
       cb(null, true);
       break;
+    case 'image/gif':
+      cb(null, true);
+      break;
     default:
       cb(null, false);
       break;
@@ -37,7 +38,7 @@ const upload = multer({
   fileFilter
 });
 
-Router.post('/save', auth, upload.single('image'), (req, res) => {
+Router.post('/save', upload.single('image'), (req, res) => {
   if (req.file) {
     res.status(201).sendFile(path.resolve(__dirname, `../uploads/${req.file.filename}`));
   }

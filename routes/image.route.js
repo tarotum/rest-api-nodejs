@@ -1,7 +1,8 @@
 const express = require('express');
+const multer = require('multer');
+const auth = require('../middleware/auth.middleware');
 
 const Router = express.Router();
-const multer = require('multer');
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
@@ -37,7 +38,7 @@ const upload = multer({
   fileFilter
 });
 
-Router.post('/save', upload.single('image'), (req, res) => {
+Router.post('/save', auth, upload.single('image'), (req, res) => {
   if (req.file) {
     res.status(201).json({ url: req.file.path });
   } else {

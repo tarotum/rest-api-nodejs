@@ -1,5 +1,4 @@
 const express = require('express');
-const path = require('path');
 
 const Router = express.Router();
 const multer = require('multer');
@@ -40,7 +39,9 @@ const upload = multer({
 
 Router.post('/save', upload.single('image'), (req, res) => {
   if (req.file) {
-    res.status(201).sendFile(path.resolve(__dirname, `../uploads/${req.file.filename}`));
+    res.status(201).json({ url: req.file.path });
+  } else {
+    res.status(500).json({ error: 'Something broke!' });
   }
 });
 

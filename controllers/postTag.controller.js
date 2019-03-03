@@ -1,73 +1,88 @@
+/* eslint-disable no-underscore-dangle */
 const Tag = require('../models/postTag.model');
 
 module.exports = {
   create: async (req, res) => {
-    const newTag = new Tag({
-      type: req.body.type,
-      status: req.body.status || 'draft',
-      title: req.body.title.trim(),
-      content: req.body.content.trim(),
-      lang: req.body.lang || 'en'
-    });
-    if (req.file) {
-      newTag.image = req.file.path.replace(/\\/g, '/');
-    }
+    if (!req.body.type) {
+      res.status(400).json('Post Tag type required.');
+    } else if (!req.body.status) {
+      res.status(400).json('Post Tag status required.');
+    } else if (!req.body.title) {
+      res.status(400).json('Post Tag title required.');
+    } else if (!req.body.lang) {
+      res.status(400).json('Post Tag lang required.');
+    } else {
+      const newTag = new Tag({
+        type: req.body.type,
+        status: req.body.status || 'draft',
+        title: req.body.title.trim(),
+        content: req.body.content.trim(),
+        lang: req.body.lang || 'en'
+      });
+      if (req.file) {
+        newTag.image = req.file.path.replace(/\\/g, '/');
+      }
 
-    try {
-      const result = await newTag.save();
-      res.status(201).json({
-        post: result,
-        errors: []
-      });
-    } catch (error) {
-      res.status(500).json({
-        errors: [error]
-      });
+      try {
+        const result = await newTag.save();
+        res.status(201).json(result._doc);
+      } catch (error) {
+        res.status(500).json(error);
+      }
     }
   },
   updateById: async (req, res) => {
-    const updateFields = {};
-    // eslint-disable-next-line no-restricted-syntax
-    for (const [key, value] of Object.entries(req.body)) {
-      updateFields[key] = value.trim();
-    }
-    if (req.file) {
-      updateFields.image = req.file.path.replace(/\\/g, '/');
-    }
+    if (!req.body.type) {
+      res.status(400).json('Post Tag type required.');
+    } else if (!req.body.status) {
+      res.status(400).json('Post Tag status required.');
+    } else if (!req.body.title) {
+      res.status(400).json('Post Tag title required.');
+    } else if (!req.body.lang) {
+      res.status(400).json('Post Tag lang required.');
+    } else {
+      try {
+        const tag = await Tag.findById({ _id: req.params.id });
+        tag.type = req.body.type;
+        tag.status = req.body.status;
+        tag.title = req.body.title;
+        tag.lang = req.body.lang;
+        tag.content = req.body.content || tag.content;
 
-    try {
-      const result = await Tag.findOneAndUpdate(
-        { _id: req.params.id },
-        { $set: updateFields },
-        { new: true }
-      );
-      res.status(200).json({ result, errors: [] });
-    } catch (error) {
-      res.status(500).json({ errors: [error] });
+        if (req.file) {
+          tag.image = req.file.path.replace(/\\/g, '/');
+        } else if (!req.file && tag.image !== undefined) {
+          tag.image = undefined;
+        }
+        await tag.save();
+        res.status(200).json(tag._doc);
+      } catch (error) {
+        res.status(500).json(error);
+      }
     }
   },
   getOneById: async (req, res) => {
     try {
       const tag = await Tag.findOne({ _id: req.params.id });
       if (!tag) {
-        res.status(404).json({ errors: ['Post Tag not found! :c'] });
+        res.status(404).json('Post Tag not found! :c');
       } else {
-        res.status(200).json({ tag, errors: [] });
+        res.status(200).json(tag._doc);
       }
     } catch (error) {
-      res.status(500).json({ errors: [error] });
+      res.status(500).json(error);
     }
   },
   getOneBySlug: async (req, res) => {
     try {
       const tag = await Tag.findOne({ slug: req.params.slug });
       if (!tag) {
-        res.status(404).json({ errors: ['Post Tag not found! :c'] });
+        res.status(404).json('Post Tag not found! :c');
       } else {
-        res.status(200).json({ tag, errors: [] });
+        res.status(200).json(tag._doc);
       }
     } catch (error) {
-      res.status(500).json({ errors: [error] });
+      res.status(500).json(error);
     }
   },
   getAll: async (req, res) => {
@@ -93,22 +108,22 @@ module.exports = {
     };
     try {
       const result = await Tag.paginate(query, options);
-      res.status(200).json({ result, errors: [] });
+      res.status(200).json(result);
     } catch (error) {
-      res.status(500).json({ errors: [error] });
+      res.status(500).json(error);
     }
   },
   removeById: async (req, res) => {
     try {
       const tag = await Tag.findById({ _id: req.params.id });
       if (!tag) {
-        res.status(404).json({ errors: ['Tag not found! :c'] });
+        res.status(404).json('Tag not found! :c');
       } else {
         await Tag.deleteOne({ _id: req.params.id });
-        res.status(200).json({ message: `Tag ${tag.title} deleted successfuly`, errors: [] });
+        res.status(200).json('Deleted.');
       }
     } catch (error) {
-      res.status(500).json({ errors: [error] });
+      res.status(500).json(error);
     }
   }
 };

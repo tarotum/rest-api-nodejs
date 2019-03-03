@@ -1,78 +1,98 @@
+/* eslint-disable no-underscore-dangle */
 const Post = require('../models/post.model');
 
 module.exports = {
   create: async (req, res) => {
-    const newPost = new Post({
-      type: req.body.type,
-      status: req.body.status || 'draft',
-      title: req.body.title.trim(),
-      content: req.body.content.trim(),
-      lang: req.body.lang || 'en'
-    });
+    if (!req.body.type) {
+      res.status(400).json('Post type required.');
+    } else if (!req.body.status) {
+      res.status(400).json('Post status required.');
+    } else if (!req.body.title) {
+      res.status(400).json('Post title required.');
+    } else if (!req.body.lang) {
+      res.status(400).json('Post lang required.');
+    } else {
+      const newPost = new Post({
+        type: req.body.type,
+        status: req.body.status || 'draft',
+        title: req.body.title,
+        content: req.body.content,
+        lang: req.body.lang || 'en'
+      });
 
-    if (req.body.tags) {
-      newPost.tags = req.body.tags.split(',');
-    }
+      if (req.body.tags) {
+        newPost.tags = req.body.tags.split(',');
+      }
 
-    if (req.file) {
-      newPost.image = req.file.path.replace(/\\/g, '/');
-    }
-
-    try {
-      const result = await newPost.save();
-      res.status(201).json({ ...result });
-    } catch (error) {
-      res.status(500).json({ error });
+      if (req.file) {
+        newPost.image = req.file.path.replace(/\\/g, '/');
+      }
+      try {
+        const result = await newPost.save();
+        res.status(201).json(result._doc);
+      } catch (error) {
+        res.status(500).json(error);
+      }
     }
   },
   updateById: async (req, res) => {
-    const updateFields = {};
-    // eslint-disable-next-line no-restricted-syntax
-    for (const [key, value] of Object.entries(req.body)) {
-      if (key === 'tags') {
-        const tagsValue = value.split(',');
-        updateFields.tags = tagsValue;
-      } else {
-        updateFields[key] = value.trim();
-      }
-    }
-    if (req.file) {
-      updateFields.image = req.file.path.replace(/\\/g, '/');
-    }
+    if (!req.body.type) {
+      res.status(400).json('Post type required.');
+    } else if (!req.body.status) {
+      res.status(400).json('Post status required.');
+    } else if (!req.body.title) {
+      res.status(400).json('Post title required.');
+    } else if (!req.body.lang) {
+      res.status(400).json('Post lang required.');
+    } else {
+      try {
+        const post = await Post.findById({ _id: req.params.id });
+        post.type = req.body.type;
+        post.status = req.body.status;
+        post.title = req.body.title;
+        post.lang = req.body.lang;
+        post.content = req.body.content || post.content;
 
-    try {
-      const result = await Post.findOneAndUpdate(
-        { _id: req.params.id },
-        { $set: updateFields },
-        { new: true }
-      );
-      res.status(200).json({ ...post._doc });
-    } catch (error) {
-      res.status(500).json({ error });
+        if (req.body.tags) {
+          post.tags = req.body.tags.split(',');
+        } else if (req.body.tags === '' && post.tags !== undefined) {
+          post.tags = undefined;
+        }
+
+        if (req.file) {
+          post.image = req.file.path.replace(/\\/g, '/');
+        } else if (!req.file && post.image !== undefined) {
+          post.image = undefined;
+        }
+        await post.save();
+        res.status(200).json(post._doc);
+      } catch (error) {
+        res.status(500).json(error);
+      }
     }
   },
   getOneById: async (req, res) => {
     try {
       const post = await Post.findOne({ _id: req.params.id });
       if (!post) {
-        res.status(404).json({ error: 'Post not found! :c' });
+        res.status(404).json('Post not found! :c');
       } else {
-        res.status(200).json({ ...post._doc });
+        res.status(200).json(post._doc);
       }
     } catch (error) {
-      res.status(500).json({ error });
+      res.status(500).json(error);
     }
   },
   getOneBySlug: async (req, res) => {
     try {
       const post = await Post.findOne({ slug: req.params.slug });
       if (!post) {
-        res.status(404).json({ error: 'Post not found! :c' });
+        res.status(404).json('Post not found! :c');
       } else {
-        res.status(200).json({ ...post._doc });
+        res.status(200).json(post._doc);
       }
     } catch (error) {
-      res.status(500).json({ error });
+      res.status(500).json(error);
     }
   },
   getAll: async (req, res) => {
@@ -91,7 +111,7 @@ module.exports = {
       query.tags = { $in: tagsArr };
     }
     const options = {
-      select: '_id title content image slug tags',
+      select: '_id title status content image slug tags',
       sort: { date: -1 },
       limit: parseInt(req.query.limit, 10) || 5,
       page: parseInt(req.query.page, 10) || 1,
@@ -108,13 +128,13 @@ module.exports = {
     try {
       const post = await Post.findById({ _id: req.params.id });
       if (!post) {
-        res.status(404).json({ error: 'Post not found! :c' });
+        res.status(404).json('Post not found! :c');
       } else {
         await Post.deleteOne({ _id: req.params.id });
-        res.status(200).json({ message: `Post ${post.title} deleted successfuly` });
+        res.status(200).json('Deleted.');
       }
     } catch (error) {
-      res.status(500).json({ error });
+      res.status(500).json(error);
     }
   }
 };

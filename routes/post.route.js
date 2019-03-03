@@ -37,10 +37,11 @@ const upload = multer({
   fileFilter
 });
 
+Router.get('/get/:id', PostController.getOneById);
 Router.get('/:slug', PostController.getOneBySlug);
 Router.get('/', PostController.getAll);
 Router.post('/create', auth, upload.single('image'), PostController.create);
-Router.patch('/update/:id', auth, upload.single('image'), PostController.updateById);
+Router.put('/update/:id', auth, upload.single('image'), PostController.updateById);
 Router.delete('/remove/:id', auth, PostController.removeById);
 
 module.exports = Router;

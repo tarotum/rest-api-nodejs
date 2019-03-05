@@ -16,7 +16,7 @@ module.exports = {
         type: req.body.type,
         status: req.body.status || 'draft',
         title: req.body.title.trim(),
-        content: req.body.content.trim(),
+        content: req.body.content,
         lang: req.body.lang || 'en'
       });
       if (req.file) {

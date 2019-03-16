@@ -14,14 +14,14 @@ module.exports = {
       } else {
         const passwordHash = await bcrypt.hash(req.body.password, 10);
         const user = new User({
-          name: req.body.name,
+          username: req.body.username,
           email: req.body.email,
           password: passwordHash
         });
 
         const savedUser = await user.save();
 
-        res.status(201).json({ result: `Created ${savedUser.name} user` });
+        res.status(201).json({ result: `Created ${savedUser.username} user` });
       }
     } catch (error) {
       res.status(500).json({ error });

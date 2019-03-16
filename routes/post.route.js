@@ -4,6 +4,7 @@ const Router = express.Router();
 const multer = require('multer');
 
 const auth = require('../middleware/auth.middleware');
+const validPost = require('../middleware/validPost.middleware');
 const PostController = require('../controllers/post.controller');
 
 const storage = multer.diskStorage({
@@ -23,6 +24,9 @@ const fileFilter = (req, file, cb) => {
     case 'image/png':
       cb(null, true);
       break;
+    case 'image/gif':
+      cb(null, true);
+      break;
     default:
       cb(null, false);
       break;
@@ -40,8 +44,8 @@ const upload = multer({
 Router.get('/get/:id', PostController.getOneById);
 Router.get('/:slug', PostController.getOneBySlug);
 Router.get('/', PostController.getAll);
-Router.post('/create', auth, upload.single('image'), PostController.create);
-Router.put('/update/:id', auth, upload.single('image'), PostController.updateById);
+Router.post('/create', auth, upload.single('image'), validPost, PostController.create);
+Router.put('/update/:id', auth, upload.single('image'), validPost, PostController.updateById);
 Router.delete('/remove/:id', auth, PostController.removeById);
 
 module.exports = Router;

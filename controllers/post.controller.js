@@ -2,73 +2,62 @@
 const Post = require('../models/post.model');
 
 module.exports = {
+  // Creating post with image and tags
   create: async (req, res) => {
-    if (!req.body.type) {
-      res.status(400).json('Post type required.');
-    } else if (!req.body.status) {
-      res.status(400).json('Post status required.');
-    } else if (!req.body.title) {
-      res.status(400).json('Post title required.');
-    } else if (!req.body.lang) {
-      res.status(400).json('Post lang required.');
-    } else {
-      const newPost = new Post({
-        type: req.body.type,
-        status: req.body.status || 'draft',
-        title: req.body.title,
-        content: req.body.content,
-        lang: req.body.lang || 'en'
-      });
+    // Creating post if all if required fields are exist
+    const newPost = new Post({
+      type: req.body.type,
+      status: req.body.status || 'draft',
+      title: req.body.title,
+      content: req.body.content,
+      lang: req.body.lang || 'en'
+    });
+
+    if (req.body.tags) {
+      // Splitting req string tags into array with tag ids
+      // string must contain tags id divided by comma
+      newPost.tags = req.body.tags.split(',');
+    }
+
+    if (req.file) {
+      // Replacing divider in image path
+      newPost.image = req.file.path.replace(/\\/g, '/');
+    }
+    try {
+      const result = await newPost.save();
+
+      // Return crated post if save succesfull
+      // returning only useful info without mongodb services fields
+      res.status(201).json(result._doc);
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  },
+  // Updating post with image and tags
+  updateById: async (req, res) => {
+    try {
+      const post = await Post.findById({ _id: req.params.id });
+      post.type = req.body.type;
+      post.status = req.body.status;
+      post.title = req.body.title;
+      post.lang = req.body.lang;
+      post.content = req.body.content || post.content;
 
       if (req.body.tags) {
-        newPost.tags = req.body.tags.split(',');
+        post.tags = req.body.tags.split(',');
+      } else if (req.body.tags === '' && post.tags !== undefined) {
+        post.tags = undefined;
       }
 
       if (req.file) {
-        newPost.image = req.file.path.replace(/\\/g, '/');
+        post.image = req.file.path.replace(/\\/g, '/');
+      } else if (!req.file && post.image !== undefined) {
+        post.image = undefined;
       }
-      try {
-        const result = await newPost.save();
-        res.status(201).json(result._doc);
-      } catch (error) {
-        res.status(500).json(error);
-      }
-    }
-  },
-  updateById: async (req, res) => {
-    if (!req.body.type) {
-      res.status(400).json('Post type required.');
-    } else if (!req.body.status) {
-      res.status(400).json('Post status required.');
-    } else if (!req.body.title) {
-      res.status(400).json('Post title required.');
-    } else if (!req.body.lang) {
-      res.status(400).json('Post lang required.');
-    } else {
-      try {
-        const post = await Post.findById({ _id: req.params.id });
-        post.type = req.body.type;
-        post.status = req.body.status;
-        post.title = req.body.title;
-        post.lang = req.body.lang;
-        post.content = req.body.content || post.content;
-
-        if (req.body.tags) {
-          post.tags = req.body.tags.split(',');
-        } else if (req.body.tags === '' && post.tags !== undefined) {
-          post.tags = undefined;
-        }
-
-        if (req.file) {
-          post.image = req.file.path.replace(/\\/g, '/');
-        } else if (!req.file && post.image !== undefined) {
-          post.image = undefined;
-        }
-        await post.save();
-        res.status(200).json(post._doc);
-      } catch (error) {
-        res.status(500).json(error);
-      }
+      await post.save();
+      res.status(200).json(post._doc);
+    } catch (error) {
+      res.status(500).json(error);
     }
   },
   getOneById: async (req, res) => {

@@ -23,6 +23,9 @@ const fileFilter = (req, file, cb) => {
     case 'image/png':
       cb(null, true);
       break;
+    case 'image/gif':
+      cb(null, true);
+      break;
     default:
       cb(null, false);
       break;

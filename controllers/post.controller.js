@@ -110,14 +110,14 @@ module.exports = {
       const result = await Post.paginate(query, options);
       res.status(200).json({ ...result });
     } catch (error) {
-      res.status(500).json({ error });
+      res.status(500).json(error);
     }
   },
   removeById: async (req, res) => {
     try {
       const post = await Post.findById({ _id: req.params.id });
       if (!post) {
-        res.status(404).json('Post not found! :c');
+        res.status(404).json('Post not found.');
       } else {
         await Post.deleteOne({ _id: req.params.id });
         res.status(200).json('Deleted.');

@@ -1,9 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
 const ENV = require('dotenv');
 const cors = require('cors');
-const morgan = require('morgan');
 
 ENV.config();
 
@@ -14,9 +12,8 @@ const ImageRoutes = require('./routes/image.route');
 
 const app = express();
 
-// Config bodyParser
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // Config CORS
 const whitelist = process.env.WHITELIST.split(',');
@@ -25,9 +22,6 @@ app.use(
     origin: whitelist
   })
 );
-
-// Config logs
-app.use(morgan('tiny'));
 
 // Static files folder
 app.use('/uploads', express.static(`${__dirname}/uploads`));

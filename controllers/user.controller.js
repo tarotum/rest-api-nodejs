@@ -7,17 +7,22 @@ ENV.config();
 
 module.exports = {
   signup: async (req, res) => {
+    const { name, email, password } = req.body;
+    if (password.length < 10) {
+      return res.status(409).json('Password must be 10 characters or more.');
+    }
+
     try {
       // Find user with the same email
-      const userExist = await User.findOne({ email: req.body.email });
+      const userExist = await User.findOne({ email });
       if (userExist) {
         res.status(409).json('User already exist.');
       } else {
         // if user not found hash password and create new user
-        const passwordHash = await bcrypt.hash(req.body.password, 10);
+        const passwordHash = await bcrypt.hash(password, 10);
         const user = new User({
-          username: req.body.username,
-          email: req.body.email,
+          name,
+          email,
           password: passwordHash
         });
         await user.save();
@@ -29,15 +34,17 @@ module.exports = {
     }
   },
   signin: async (req, res) => {
-    if (!req.body.email) {
+    const { email, password } = req.body;
+
+    if (!email) {
       res.status(400).json('Email required.');
-    } else if (!req.body.password) {
+    } else if (!password) {
       res.status(400).json('Password required.');
     } else {
       try {
-        const user = await User.findOne({ email: req.body.email });
+        const user = await User.findOne({ email });
         if (user) {
-          const checkPassword = await bcrypt.compare(req.body.password, user.password);
+          const checkPassword = await bcrypt.compare(password, user.password);
           if (checkPassword) {
             const token = await jwt.sign(
               { name: user.name, email: user.email },
@@ -49,12 +56,12 @@ module.exports = {
             res
               .status(200)
               .header('x-auth-token', token)
-              .json(token);
+              .json('Successful');
           } else {
-            res.status(401).json('Invalid username or password');
+            res.status(401).json('Invalid email or password');
           }
         } else {
-          res.status(401).json('Invalid username or password');
+          res.status(401).json('Invalid email or password');
         }
       } catch (error) {
         res.status(500).json(error);

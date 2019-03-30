@@ -13,7 +13,7 @@ Router.get('/get/:id', PostController.getOneById);
 Router.get('/:slug', PostController.getOneBySlug);
 Router.get('/', PostController.getAll);
 Router.post('/create', auth, upload.single('image'), validPost, PostController.create);
-Router.put('/update/:id', auth, upload.single('image'), validPost, PostController.updateById);
+Router.put('/update/:id', auth, upload.single('image'), PostController.updateById);
 Router.delete('/remove/:id', auth, PostController.removeById);
 
 module.exports = Router;

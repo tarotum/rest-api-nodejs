@@ -1,22 +1,26 @@
 /* eslint-disable no-underscore-dangle */
+const fs = require('fs');
+const path = require('path');
 const Post = require('../models/post.model');
 
 module.exports = {
   // Creating post with image and tags
   create: async (req, res) => {
+    const { type, status, title, content, lang, tags } = req.body;
+
     // Creating post if all if required fields are exist
     const newPost = new Post({
-      type: req.body.type,
-      status: req.body.status || 'draft',
-      title: req.body.title,
-      content: req.body.content,
-      lang: req.body.lang || 'en'
+      type,
+      status: status || 'draft',
+      title,
+      content,
+      lang: lang || 'en'
     });
 
-    if (req.body.tags) {
+    if (tags) {
       // Splitting req string tags into array with tag ids
       // string must contain tags id divided by comma
-      newPost.tags = req.body.tags.split(',');
+      newPost.tags = tags.split(',');
     }
 
     if (req.file) {
@@ -35,17 +39,22 @@ module.exports = {
   },
   // Updating post with image and tags
   updateById: async (req, res) => {
+    const { type, status, title, lang, content, tags } = req.body;
+
     try {
       const post = await Post.findById({ _id: req.params.id });
-      post.type = req.body.type;
-      post.status = req.body.status;
-      post.title = req.body.title;
-      post.lang = req.body.lang;
-      post.content = req.body.content || post.content;
 
-      if (req.body.tags) {
-        post.tags = req.body.tags.split(',');
-      } else if (req.body.tags === '' && post.tags !== undefined) {
+      if (!post) return res.status(404).json('Post not found.');
+
+      post.type = type || post.type;
+      post.status = status || post.status;
+      post.title = title || post.title;
+      post.lang = lang || post.lang;
+      post.content = content || post.content;
+
+      if (tags) {
+        post.tags = tags.split(',');
+      } else if (tags === '' && post.tags !== undefined) {
         post.tags = undefined;
       }
 
@@ -119,6 +128,9 @@ module.exports = {
       if (!post) {
         res.status(404).json('Post not found.');
       } else {
+        if (post.image !== undefined) {
+          fs.unlinkSync(path.resolve(__dirname, `../${post.image}`));
+        }
         await Post.deleteOne({ _id: req.params.id });
         res.status(200).json('Deleted.');
       }

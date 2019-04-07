@@ -1,5 +1,5 @@
 {
-  "name": "vp-rest",
+  "name": "rest-api-nodejs",
   "version": "1.0.0",
   "main": "index.js",
   "author": "tarotum <onyskiv.maxim@gmail.com>",
@@ -35,7 +35,6 @@
     "cors": "^2.8.5",
     "cross-env": "^5.2.0",
     "dotenv": "^6.2.0",
-    "ejs": "^2.6.1",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.4.0",
     "mongoose": "^5.4.13",

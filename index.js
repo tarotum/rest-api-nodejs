@@ -7,7 +7,7 @@ ENV.config();
 
 const UserRoutes = require('./routes/user.route');
 const PostRoutes = require('./routes/post.route');
-const PostTagRoutes = require('./routes/postTag.route');
+const TagRoutes = require('./routes/tag.route');
 const ImageRoutes = require('./routes/image.route');
 
 const app = express();
@@ -30,7 +30,7 @@ app.use('/uploads', express.static(`${__dirname}/uploads`));
 app.use('/api/image', ImageRoutes);
 app.use('/api/user', UserRoutes);
 app.use('/api/posts', PostRoutes);
-app.use('/api/poststags', PostTagRoutes);
+app.use('/api/tags', TagRoutes);
 
 // Conntent DB
 mongoose.connect(

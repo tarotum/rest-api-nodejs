@@ -37,7 +37,7 @@
     "dotenv": "^6.2.0",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.4.0",
-    "mongoose": "^5.4.13",
+    "mongoose": "^5.7.5",
     "mongoose-paginate-v2": "^1.0.21",
     "mongoose-slug-plugin": "^1.0.2",
     "multer": "^1.4.1"
